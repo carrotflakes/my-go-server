@@ -1,11 +1,10 @@
 package usecase
 
 import (
-	"context"
 	"my-arch/domain"
 )
 
-func (u *Usecase) AddNote(ctx context.Context, note *domain.Note) (*domain.Note, error) {
+func (u *Usecase) AddNote(ctx Context, note *domain.Note) (*domain.Note, error) {
 	userID, err := getUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -32,7 +31,7 @@ func (u *Usecase) AddNote(ctx context.Context, note *domain.Note) (*domain.Note,
 	return note, nil
 }
 
-func (u *Usecase) GetAllNotes(ctx context.Context) ([]*domain.Note, error) {
+func (u *Usecase) GetAllNotes(ctx Context) ([]*domain.Note, error) {
 	userID, err := getUserID(ctx)
 	if err != nil {
 		return nil, err

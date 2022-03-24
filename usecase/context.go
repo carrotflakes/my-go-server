@@ -7,9 +7,16 @@ import (
 	"fmt"
 )
 
+type Context interface {
+	context.Context
+
+	SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool)
+	GetCookie(name string) (string, error)
+}
+
 const CtxUserID = "userID"
 
-func getUserID(ctx context.Context) (int, error) {
+func getUserID(ctx Context) (int, error) {
 	userID := ctx.Value(CtxUserID)
 	if userID == nil {
 		return 0, fmt.Errorf("userID is not set")

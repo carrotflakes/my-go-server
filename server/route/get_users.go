@@ -14,7 +14,7 @@ func init() {
 			"/users",
 			func(usecase *usecase.Usecase) gin.HandlerFunc {
 				return func(ctx *gin.Context) {
-					users, err := usecase.UserGetAll(ctx.Request.Context())
+					users, err := usecase.UserGetAll((Context)(*ctx))
 					if err != nil {
 						ctx.JSON(500, gin.H{
 							"message": err.Error(),

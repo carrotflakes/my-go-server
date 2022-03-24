@@ -1,4 +1,6 @@
-# Layers
+# my-go-server
+
+## Layers
 
 ```
 ---
@@ -10,11 +12,11 @@ Infrastructure
 ---
 ```
 
-# Requirements
+## Requirements
 
 - gin
 
-# TODO
+## TODO
 - graphQL
 - test書く
 - error

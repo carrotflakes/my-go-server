@@ -24,7 +24,7 @@ func init() {
 						Text: bind.Text,
 					}
 
-					note, err := usecase.AddNote(ctx, note)
+					note, err := usecase.AddNote((Context)(*ctx), note)
 					if err != nil {
 						ctx.JSON(500, gin.H{
 							"message": err.Error(),

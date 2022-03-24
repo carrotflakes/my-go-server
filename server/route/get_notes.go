@@ -14,7 +14,7 @@ func init() {
 			"/notes",
 			func(usecase *usecase.Usecase) gin.HandlerFunc {
 				return func(ctx *gin.Context) {
-					notes, err := usecase.GetAllNotes(ctx)
+					notes, err := usecase.GetAllNotes(Context(*ctx))
 					if err != nil {
 						ctx.JSON(500, gin.H{
 							"message": err.Error(),
