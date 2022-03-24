@@ -4,7 +4,6 @@ import (
 	"context"
 	"my-arch/domain"
 	"my-arch/mydb"
-	"time"
 )
 
 type Note struct {
@@ -41,7 +40,7 @@ func (g *Note) Create(ctx context.Context, note *domain.Note) (*domain.Note, err
 	note = &domain.Note{
 		ID:        id,
 		Text:      note.Text,
-		CreatedAt: time.Now(),
+		CreatedAt: domain.TimeNow(),
 	}
 
 	*table = append(*table, note)

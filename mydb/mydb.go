@@ -1,3 +1,5 @@
+// インメモリDB
+// MySQLとか用意するのがめんどいので。
 package mydb
 
 type MyDB struct {

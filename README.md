@@ -20,6 +20,9 @@ Infrastructure
 - error
 - logging
 - transaction
+- cookie
+- CORS
+- websocket
 
 controllerはいらない。というかginのルータがcontrollerの役割
 usecaseはinteface化しない
