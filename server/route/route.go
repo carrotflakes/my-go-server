@@ -35,10 +35,4 @@ func Setup(r *gin.Engine, usecase *usecase.Usecase) {
 			"userId": ctx.Request.Context().Value("userID").(int),
 		})
 	})
-
-	r.GET("/healthz", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"status": "ok",
-		})
-	})
 }

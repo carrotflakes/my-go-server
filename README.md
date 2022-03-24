@@ -22,7 +22,6 @@ Infrastructure
 - error
 - logging
 - transaction
-- cookie
 - CORS
 - websocket
 

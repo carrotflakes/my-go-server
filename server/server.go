@@ -9,7 +9,16 @@ import (
 )
 
 func New(usecase *usecase.Usecase) *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
+
+	r.GET("/healthz", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{
+			"status": "ok",
+		})
+	})
+
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 
 	r.Use(middleware.Authorize())
 

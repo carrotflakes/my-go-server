@@ -1,3 +1,4 @@
+// アプリケーションレイヤーに渡すコンテキストを定義
 package route
 
 import (
