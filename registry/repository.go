@@ -4,7 +4,8 @@ import (
 	"my-arch/domain"
 )
 
-type Repository interface {
-	NewUser() domain.UserRepository
-	NewNote() domain.NoteRepository
+type Repositories struct {
+	User     domain.UserRepository
+	Note     domain.NoteRepository
+	UserNote domain.UserNoteRepository
 }

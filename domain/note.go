@@ -1,11 +1,14 @@
 package domain
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type Note struct {
 	ID        int
 	Text      string
-	CreatedAt int
+	CreatedAt time.Time
 }
 
 type NoteRepository interface {

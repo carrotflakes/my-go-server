@@ -1,18 +1,15 @@
 package usecase
 
 import (
-	"my-arch/domain"
 	"my-arch/registry"
 )
 
-type Usacase struct {
-	userRepo domain.UserRepository
-	noteRepo domain.NoteRepository
+type Usecase struct {
+	repos *registry.Repositories
 }
 
-func New(repoRegi registry.Repository) *Usacase {
-	return &Usacase{
-		userRepo: repoRegi.NewUser(),
-		noteRepo: repoRegi.NewNote(),
+func New(repoRegi *registry.Repositories) *Usecase {
+	return &Usecase{
+		repos: repoRegi,
 	}
 }

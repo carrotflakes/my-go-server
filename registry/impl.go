@@ -1,27 +1,14 @@
 package registry
 
 import (
-	"my-arch/domain"
 	"my-arch/gateway"
-	"my-arch/memdb"
+	"my-arch/mydb"
 )
 
-type RepositoryImpl struct {
-	db *memdb.MemDb
-}
-
-var _ Repository = (*RepositoryImpl)(nil)
-
-func New(db *memdb.MemDb) *RepositoryImpl {
-	return &RepositoryImpl{
-		db: db,
+func NewRepositories(db *mydb.MyDB) *Repositories {
+	return &Repositories{
+		User:     gateway.NewUser(db),
+		Note:     gateway.NewNote(db),
+		UserNote: gateway.NewUserNote(db),
 	}
-}
-
-func (r *RepositoryImpl) NewUser() domain.UserRepository {
-	return gateway.NewUser(r.db)
-}
-
-func (r *RepositoryImpl) NewNote() domain.NoteRepository {
-	return gateway.NewNote(r.db)
 }

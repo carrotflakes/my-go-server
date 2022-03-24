@@ -1,16 +1,16 @@
-package memdb
+package mydb
 
-type MemDb struct {
+type MyDB struct {
 	tables map[string]*[]interface{}
 }
 
-func New() *MemDb {
-	return &MemDb{
+func New() *MyDB {
+	return &MyDB{
 		tables: map[string]*[]interface{}{},
 	}
 }
 
-func (d *MemDb) GetTable(tableName string) (*[]interface{}, error) {
+func (d *MyDB) GetTable(tableName string) (*[]interface{}, error) {
 	table, ok := d.tables[tableName]
 	if !ok {
 		table = &[]interface{}{}

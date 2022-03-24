@@ -1,8 +1,13 @@
 <html>
+<api path="/me"></api>
 <api path="/users" method="get"></api>
 <api path="/users" method="post">
   <input name="name" type="text" placeholder="name"/>
   <input name="email" type="text" placeholder="email"/>
+</api>
+<api path="/notes" method="GET"></api>
+<api path="/notes" method="POST">
+  <input name="text" type="text" placeholder="text"/>
 </api>
 
 <script src="http://localhost:4000/index.js">

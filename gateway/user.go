@@ -3,16 +3,16 @@ package gateway
 import (
 	"context"
 	"my-arch/domain"
-	"my-arch/memdb"
+	"my-arch/mydb"
 )
 
 type User struct {
-	db *memdb.MemDb
+	db *mydb.MyDB
 }
 
 var _ domain.UserRepository = (*User)(nil)
 
-func NewUser(db *memdb.MemDb) *User {
+func NewUser(db *mydb.MyDB) *User {
 	return &User{
 		db: db,
 	}

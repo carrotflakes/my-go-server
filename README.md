@@ -1,3 +1,15 @@
+# Layers
+
+```
+---
+Domain
+---
+Application
+---
+Infrastructure
+---
+```
+
 # Requirements
 
 - gin
@@ -7,7 +19,8 @@
 - test書く
 - error
 - logging
+- transaction
 
 controllerはいらない。というかginのルータがcontrollerの役割
 usecaseはinteface化しない
-controllerが存在しないのでcontrollerのテストを書かなくて良い。つまりusecaseのモック化は不要。
+controllerが存在しないのでcontrollerのテストを書かなくて良い。usecaseのモック化は不要。

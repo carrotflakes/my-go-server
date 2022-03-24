@@ -5,10 +5,10 @@ import (
 	"my-arch/domain"
 )
 
-func (u *Usacase) UserAdd(ctx context.Context, user *domain.User) (*domain.User, error) {
-	return u.userRepo.Create(ctx, user)
+func (u *Usecase) UserAdd(ctx context.Context, user *domain.User) (*domain.User, error) {
+	return u.repos.User.Create(ctx, user)
 }
 
-func (u *Usacase) UserGetAll(ctx context.Context) ([]*domain.User, error) {
-	return u.userRepo.GetAll(ctx)
+func (u *Usecase) UserGetAll(ctx context.Context) ([]*domain.User, error) {
+	return u.repos.User.GetAll(ctx)
 }

@@ -3,16 +3,17 @@ package gateway
 import (
 	"context"
 	"my-arch/domain"
-	"my-arch/memdb"
+	"my-arch/mydb"
+	"time"
 )
 
 type Note struct {
-	db *memdb.MemDb
+	db *mydb.MyDB
 }
 
 var _ domain.NoteRepository = (*Note)(nil)
 
-func NewNote(db *memdb.MemDb) *Note {
+func NewNote(db *mydb.MyDB) *Note {
 	return &Note{
 		db: db,
 	}
@@ -37,14 +38,41 @@ func (g *Note) Create(ctx context.Context, note *domain.Note) (*domain.Note, err
 		}
 	}
 
-	note.ID = id
+	note = &domain.Note{
+		ID:        id,
+		Text:      note.Text,
+		CreatedAt: time.Now(),
+	}
 
 	*table = append(*table, note)
 
-	return nil, nil
+	return note, nil
 }
 
 func (g *Note) GetNotesByUserID(ctx context.Context, userID int) ([]*domain.Note, error) {
-	// TODO
-	return nil, nil
+	userNoteTable, err := g.db.GetTable("userNote")
+	if err != nil {
+		return nil, err
+	}
+
+	noteTable, err := g.db.GetTable("note")
+	if err != nil {
+		return nil, err
+	}
+
+	notes := []*domain.Note{}
+
+	for _, v := range *userNoteTable {
+		userNote := v.(*domain.UserNote)
+		if userID == userNote.UserID {
+			for _, v := range *noteTable {
+				note := v.(*domain.Note)
+				if note.ID == userNote.NoteID {
+					notes = append(notes, note)
+				}
+			}
+		}
+	}
+
+	return notes, nil
 }
