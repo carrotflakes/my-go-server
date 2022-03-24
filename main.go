@@ -3,15 +3,15 @@ package main
 import (
 	"my-arch/config"
 	"my-arch/domain"
+	"my-arch/gateway"
 	"my-arch/mydb"
-	"my-arch/registry"
 	"my-arch/server"
 	"my-arch/usecase"
 )
 
 func main() {
 	db := createDB()
-	repos := registry.NewRepositories(db)
+	repos := gateway.NewRepositories(db)
 	usecase := usecase.New(repos)
 	server := server.New(usecase)
 

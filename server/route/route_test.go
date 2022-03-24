@@ -1,8 +1,8 @@
 package route_test
 
 import (
+	"my-arch/gateway"
 	"my-arch/mydb"
-	"my-arch/registry"
 	"my-arch/server"
 	"my-arch/usecase"
 
@@ -11,7 +11,7 @@ import (
 
 func NewServer() *gin.Engine {
 	db := mydb.New()
-	repos := registry.NewRepositories(db)
+	repos := gateway.NewRepositories(db)
 	usecase := usecase.New(repos)
 	server := server.New(usecase)
 

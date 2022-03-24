@@ -1,14 +1,12 @@
 package usecase
 
-import (
-	"my-arch/registry"
-)
+import "my-arch/domain"
 
 type Usecase struct {
-	repos *registry.Repositories
+	repos *domain.Repositories
 }
 
-func New(repoRegi *registry.Repositories) *Usecase {
+func New(repoRegi *domain.Repositories) *Usecase {
 	return &Usecase{
 		repos: repoRegi,
 	}

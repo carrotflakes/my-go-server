@@ -7,9 +7,9 @@ import (
 )
 
 type Handler struct {
-	method     string
-	path       string
-	handlerGen func(*usecase.Usecase) gin.HandlerFunc
+	method      string
+	path        string
+	makeHandler func(*usecase.Usecase) gin.HandlerFunc
 }
 
 var handlers = []Handler{}
@@ -21,7 +21,7 @@ func Setup(r *gin.Engine, usecase *usecase.Usecase) {
 	})
 
 	for _, handler := range handlers {
-		r.Handle(handler.method, handler.path, handler.handlerGen(usecase))
+		r.Handle(handler.method, handler.path, handler.makeHandler(usecase))
 	}
 
 	r.GET("/ping", func(c *gin.Context) {
