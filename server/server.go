@@ -17,9 +17,9 @@ func New(usecase *usecase.Usecase) *gin.Engine {
 		})
 	})
 
+	r.Use(middleware.Cors())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-
 	r.Use(middleware.Authorize())
 
 	route.Setup(r, usecase)
