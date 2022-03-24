@@ -36,6 +36,21 @@ func (g *User) GetAll(ctx context.Context) ([]*domain.User, error) {
 	return users, nil
 }
 
+func (g *User) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+	table, err := g.db.GetTable("user")
+	if err != nil {
+		return nil, err
+	}
+
+	for _, v := range *table {
+		if v.(*domain.User).Email == email {
+			return v.(*domain.User), nil
+		}
+	}
+
+	return nil, nil // not found
+}
+
 func (g *User) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
 	table, err := g.db.GetTable("user")
 	if err != nil {
@@ -51,13 +66,10 @@ func (g *User) Create(ctx context.Context, user *domain.User) (*domain.User, err
 		}
 	}
 
-	user = &domain.User{
-		ID:    id,
-		Name:  user.Name,
-		Email: user.Email,
-	}
+	u := *user
+	u.ID = id
 
-	*table = append(*table, user)
+	*table = append(*table, &u)
 
 	return user, nil
 }

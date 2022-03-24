@@ -1,12 +1,18 @@
 <html>
-<api path="/me"></api>
-<api path="/users" method="get"></api>
-<api path="/users" method="post">
+<api path="/signup" method="post">
   <input name="name" type="text" placeholder="name"/>
   <input name="email" type="text" placeholder="email"/>
+  <input name="password" type="text" placeholder="password"/>
 </api>
+<api path="/signin" method="post">
+  <input name="email" type="text" placeholder="email"/>
+  <input name="password" type="text" placeholder="password"/>
+</api>
+<api path="/signout" method="post"></api>
+<api path="/me"></api>
+<api path="/users" method="get"></api>
 <api path="/notes" method="GET"></api>
-<api path="/notes" method="POST">
+<api path="/notes" method="post">
   <input name="text" type="text" placeholder="text"/>
 </api>
 
