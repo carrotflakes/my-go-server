@@ -22,8 +22,8 @@ Infrastructure
 - error
 - logging
 - transaction
-- CORS
 - websocket
+- goroutine
 
 controllerはいらない。というかginのルータがcontrollerの役割
 usecaseはinteface化しない

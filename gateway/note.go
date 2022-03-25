@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"fmt"
 	"my-arch/domain"
 	"my-arch/mydb"
 )
@@ -23,9 +24,13 @@ func (g *Note) Get(ctx context.Context, id int) (*domain.Note, error) {
 }
 
 func (g *Note) Create(ctx context.Context, note *domain.Note) (*domain.Note, error) {
+	if note.Text == "error" { // わざとエラーを起こす
+		return nil, fmt.Errorf("error!!!!")
+	}
+
 	table, err := g.db.GetTable("note")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create note failed; %w", err)
 	}
 
 	// IDのauto increment

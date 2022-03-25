@@ -31,9 +31,7 @@ func init() {
 
 					user, err := usecase.UserAdd((Context)(*ctx), user)
 					if err != nil {
-						ctx.JSON(500, gin.H{
-							"message": err.Error(),
-						})
+						handleError(ctx, err)
 						return
 					}
 

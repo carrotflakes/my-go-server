@@ -16,9 +16,7 @@ func init() {
 				return func(ctx *gin.Context) {
 					users, err := usecase.UserGetAll((Context)(*ctx))
 					if err != nil {
-						ctx.JSON(500, gin.H{
-							"message": err.Error(),
-						})
+						handleError(ctx, err)
 						return
 					}
 

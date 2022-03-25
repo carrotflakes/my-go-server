@@ -22,9 +22,7 @@ func init() {
 
 					user, err := usecase.SignIn((Context)(*ctx), bind.Email, bind.Password)
 					if err != nil {
-						ctx.JSON(500, gin.H{
-							"message": err.Error(),
-						})
+						handleError(ctx, err)
 						return
 					}
 
