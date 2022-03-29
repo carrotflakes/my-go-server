@@ -1,21 +1,100 @@
 <html>
-<api path="/signup" method="post">
-  <input name="name" type="text" placeholder="name"/>
-  <input name="email" type="text" placeholder="email"/>
-  <input name="password" type="text" placeholder="password"/>
-</api>
-<api path="/signin" method="post">
-  <input name="email" type="text" placeholder="email"/>
-  <input name="password" type="text" placeholder="password"/>
-</api>
-<api path="/signout" method="post"></api>
-<api path="/me"></api>
-<api path="/users" method="get"></api>
-<api path="/notes" method="GET"></api>
-<api path="/notes" method="post">
-  <input name="text" type="text" placeholder="text"/>
-</api>
+  <div id="app">
+    <div v-if="signedIn">
+      <h1>Welcome</h1>
+      <button @click="signout">Sign Out</button>
+      <div v-for="note in notes" :key="note.created_at">
+        {{note.text}}<br/>
+        {{note.created_at}}
+      </div>
+      <input type="text" v-model="noteText"/>
+      <button @click="addNote">Add Note</button>
+    </div>
+    <div v-else>
+      <h1>Please sign in / sign up</h1>
+      <button @click="signinMode = !signinMode">{{signinMode ? 'signup' : 'signin'}}</button>
+      <div v-if="signinMode">
+        <input type="text" v-model="userEmail" placeholder="email" />
+        <input type="password" v-model="userPassword" placeholder="password" />
+        <button @click="signin">Sign In</button>
+      </div>
+      <div v-else>
+        <input type="text" v-model="userName" placeholder="name" />
+        <input type="text" v-model="userEmail" placeholder="email" />
+        <input type="password" v-model="userPassword" placeholder="password" />
+        <button @click="signup">Sign Up</button>  
+      </div>
+    </div>
+    <div>
+      {{error}}
+    </div>
+  </div>
 
-<script src="http://localhost:4000/index.js">
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+      signedIn: true,
+      signinMode: true,
+      userName: '',
+      userEmail: '',
+      userPassword: '',
+      noteText: '',
+      notes: [],
+      error: '',
+    },
+    methods: {
+      signin: async function() {
+        try {
+          const res = await axios.post('/signin', {
+            email: this.userEmail,
+            password: this.userPassword,
+          })
+          this.signedIn = true
+          this.getNotes()
+        } catch (e) {
+          console.log(e)
+          this.error = e?.response?.data
+        }
+      },
+      signup: async function() {
+        const res = await axios.post('/signup', {
+          name: this.userName,
+          email: this.userEmail,
+          password: this.userPassword,
+        })
+        this.signedIn = true
+        this.getNotes()
+      },
+      signout: async function() {
+        const res = await axios.post('/signout')
+        this.signedIn = false
+      },
+      getNotes: async function() {
+        try {
+          const res = await axios.get('/notes')
+          this.notes = res.data.notes
+        } catch (e) {
+          this.signedIn = false
+        }
+      },
+      addNote: async function() {
+        try {
+          const res = await axios.post('/notes', {
+            text: this.noteText,
+          })
+          this.notes.push(res.data.note)
+          this.noteText = ''
+        } catch (e) {
+          this.error = e?.response?.data
+        }
+      },
+    },
+    mounted: function() {
+      this.getNotes()
+    },
+  })
 </script>
 </html>

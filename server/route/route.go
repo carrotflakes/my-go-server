@@ -15,10 +15,11 @@ type Handler struct {
 var handlers = []Handler{}
 
 func Setup(r *gin.Engine, usecase *usecase.Usecase) {
-	r.LoadHTMLFiles("public/index.html")
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(200, "index.html", gin.H{})
-	})
+	// r.LoadHTMLFiles("public/index.html")
+	// r.GET("/", func(c *gin.Context) {
+	// 	c.HTML(200, "index.html", gin.H{})
+	// })
+	r.StaticFile("/", "public/index.html")
 
 	for _, handler := range handlers {
 		r.Handle(handler.method, handler.path, handler.makeHandler(usecase))

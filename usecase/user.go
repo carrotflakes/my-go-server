@@ -8,17 +8,25 @@ import (
 )
 
 func (u *Usecase) UserAdd(ctx Context, user *domain.User) (*domain.User, error) {
-	return u.repos.User.Create(ctx, user)
+	user, err := u.repos.User.Create(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user; %w", err)
+	}
+	return user, nil
 }
 
 func (u *Usecase) UserGetAll(ctx Context) ([]*domain.User, error) {
-	return u.repos.User.GetAll(ctx)
+	user, err := u.repos.User.GetAll(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user; %w", err)
+	}
+	return user, nil
 }
 
 func (u *Usecase) SignIn(ctx Context, email, password string) (*domain.User, error) {
 	user, err := u.repos.User.GetByEmail(ctx, email)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get user; %w", err)
 	}
 
 	if user == nil {
@@ -29,7 +37,7 @@ func (u *Usecase) SignIn(ctx Context, email, password string) (*domain.User, err
 	fmt.Printf("password: %v\n", password)
 
 	if user.Password != password {
-		return nil, errors.New("invalid password")
+		return nil, errors.New("invalid password") // TODO: userやパスワードが正しくないという事情を外にはもらさない
 	}
 
 	ctx.SetCookie("userID", strconv.Itoa(user.ID), 60*60*24, "/", "", false, false)
