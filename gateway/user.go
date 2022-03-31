@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"fmt"
 	"my-arch/domain"
 	"my-arch/mydb"
 )
@@ -19,7 +20,18 @@ func NewUser(db *mydb.MyDB) *User {
 }
 
 func (g *User) Get(ctx context.Context, id int) (*domain.User, error) {
-	return nil, nil
+	table, err := g.db.GetTable("user")
+	if err != nil {
+		return nil, fmt.Errorf("get user table failed; %w", err)
+	}
+
+	for _, v := range *table {
+		if v.(*domain.User).ID == id {
+			return v.(*domain.User), nil
+		}
+	}
+
+	return nil, nil // not found
 }
 
 func (g *User) GetAll(ctx context.Context) ([]*domain.User, error) {
@@ -70,6 +82,35 @@ func (g *User) Create(ctx context.Context, user *domain.User) (*domain.User, err
 	u.ID = id
 
 	*table = append(*table, &u)
+	fmt.Printf("user added: %v\n", u)
 
-	return user, nil
+	return &u, nil
+}
+
+func (g *User) GetByNoteID(ctx context.Context, noteID int) ([]*domain.User, error) {
+	userNoteTable, err := g.db.GetTable("userNote")
+	if err != nil {
+		return nil, fmt.Errorf("get userNote table failed; %w", err)
+	}
+
+	userTable, err := g.db.GetTable("user")
+	if err != nil {
+		return nil, fmt.Errorf("get user table failed; %w", err)
+	}
+
+	users := []*domain.User{}
+
+	for _, v := range *userNoteTable {
+		userNote := v.(*domain.UserNote)
+		if userNote.NoteID == noteID {
+			for _, v := range *userTable {
+				user := v.(*domain.User)
+				if user.ID == userNote.UserID {
+					users = append(users, user)
+				}
+			}
+		}
+	}
+
+	return users, nil
 }

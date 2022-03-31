@@ -1,9 +1,10 @@
 package route
 
 import (
-	"my-arch/domain"
+	"fmt"
 	"my-arch/presenter"
 	"my-arch/usecase"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,25 +12,26 @@ import (
 func init() {
 	handlers = append(handlers,
 		Handler{
-			"POST",
-			"/notes",
+			"GET",
+			"/notes/:noteId/users",
 			func(usecase *usecase.Usecase) gin.HandlerFunc {
 				return func(ctx *gin.Context) {
-					bind := struct {
-						Text string `json:"text"`
-					}{}
-					ctx.BindJSON(&bind)
+					noteIDStr, _ := ctx.Params.Get("noteId")
 
-					note := domain.NewNote(bind.Text, domain.TimeNow())
+					noteID, err := strconv.Atoi(noteIDStr)
+					if err != nil {
+						handleError(ctx, fmt.Errorf("failed to parse noteId; %w", err))
+						return
+					}
 
-					note, err := usecase.AddNote((Context)(*ctx), note)
+					users, err := usecase.GetNoteUsers((Context)(*ctx), noteID)
 					if err != nil {
 						handleError(ctx, err)
 						return
 					}
 
 					ctx.JSON(200, gin.H{
-						"note": presenter.Note(note),
+						"users": presenter.Users(users),
 					})
 				}
 			},

@@ -23,6 +23,15 @@ func (u *Usecase) UserGetAll(ctx Context) ([]*domain.User, error) {
 	return user, nil
 }
 
+func (u *Usecase) GetNoteUsers(ctx Context, noteID int) ([]*domain.User, error) {
+	users, err := u.repos.User.GetByNoteID(ctx, noteID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get users; %w", err)
+	}
+
+	return users, nil
+}
+
 func (u *Usecase) SignIn(ctx Context, email, password string) (*domain.User, error) {
 	user, err := u.repos.User.GetByEmail(ctx, email)
 	if err != nil {

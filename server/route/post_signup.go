@@ -23,11 +23,7 @@ func init() {
 					}{}
 					ctx.BindJSON(&bind)
 
-					user := &domain.User{
-						Name:     bind.Name,
-						Email:    bind.Email,
-						Password: bind.Password,
-					}
+					user := domain.NewUser(bind.Name, bind.Email, bind.Password)
 
 					user, err := usecase.UserAdd((Context)(*ctx), user)
 					if err != nil {

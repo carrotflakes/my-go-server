@@ -2,15 +2,14 @@
 
 ## Layers
 
-```
----
-Domain
----
-Application
----
-Infrastructure
----
-```
+### Domain
+model, repository interface
+
+### Application
+usecase, error
+
+### Infrastructure
+gateway, server
 
 ## Requirements
 
@@ -24,7 +23,3 @@ Infrastructure
 - transaction
 - websocket
 - goroutine
-
-controllerはいらない。というかginのルータがcontrollerの役割
-usecaseはinteface化しない
-controllerが存在しないのでcontrollerのテストを書かなくて良い。usecaseのモック化は不要。

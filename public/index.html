@@ -5,24 +5,32 @@
       <button @click="signout">Sign Out</button>
       <div v-for="note in notes" :key="note.created_at">
         {{note.text}}<br/>
-        {{note.created_at}}
+        {{note.created_at}}<br/>
+        <div v-if="note.id in noteUsers">
+          <div v-for="user in noteUsers[note.id]">
+            {{user.name}}
+          </div>
+        </div>
+        <div v-else>
+          <button @click="fetchNoteUsers(note.id)">fetch users</button>
+        </div>
       </div>
       <input type="text" v-model="noteText"/>
       <button @click="addNote">Add Note</button>
     </div>
     <div v-else>
-      <h1>Please sign in / sign up</h1>
-      <button @click="signinMode = !signinMode">{{signinMode ? 'signup' : 'signin'}}</button>
+      <h1>Please signin / signup</h1>
+      <button @click="signinMode = !signinMode">toggle to {{signinMode ? 'sign up' : 'sign in'}}</button>
       <div v-if="signinMode">
         <input type="text" v-model="userEmail" placeholder="email" />
         <input type="password" v-model="userPassword" placeholder="password" />
-        <button @click="signin">Sign In</button>
+        <button @click="signin">Sign in</button>
       </div>
       <div v-else>
         <input type="text" v-model="userName" placeholder="name" />
         <input type="text" v-model="userEmail" placeholder="email" />
         <input type="password" v-model="userPassword" placeholder="password" />
-        <button @click="signup">Sign Up</button>  
+        <button @click="signup">Sign up</button>  
       </div>
     </div>
     <div>
@@ -43,6 +51,7 @@
       userPassword: '',
       noteText: '',
       notes: [],
+      noteUsers: {},
       error: '',
     },
     methods: {
@@ -87,6 +96,14 @@
           })
           this.notes.push(res.data.note)
           this.noteText = ''
+        } catch (e) {
+          this.error = e?.response?.data
+        }
+      },
+      fetchNoteUsers: async function(noteId) {
+        try {
+          const res = await axios.get(`/notes/${noteId}/users`)
+          Vue.set(this.noteUsers, noteId, res.data.users)
         } catch (e) {
           this.error = e?.response?.data
         }

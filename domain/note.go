@@ -11,6 +11,13 @@ type Note struct {
 	CreatedAt time.Time
 }
 
+func NewNote(text string, createdAt time.Time) *Note {
+	return &Note{
+		Text:      text,
+		CreatedAt: createdAt,
+	}
+}
+
 type NoteRepository interface {
 	Get(ctx context.Context, id int) (*Note, error)
 	Create(ctx context.Context, note *Note) (*Note, error)

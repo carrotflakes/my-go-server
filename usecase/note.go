@@ -21,10 +21,7 @@ func (u *Usecase) AddNote(ctx Context, note *domain.Note) (*domain.Note, error) 
 		return nil, fmt.Errorf("failed to create note; %w", err)
 	}
 
-	err = u.repos.UserNote.Create(ctx, &domain.UserNote{
-		UserID: userID,
-		NoteID: note.ID,
-	})
+	err = u.repos.UserNote.Create(ctx, domain.NewUserNote(userID, note.ID))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create userNote; %w", err)
 	}
