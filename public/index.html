@@ -44,7 +44,7 @@
   const app = new Vue({
     el: '#app',
     data: {
-      signedIn: true,
+      signedIn: false,
       signinMode: true,
       userName: '',
       userEmail: '',
@@ -53,6 +53,28 @@
       notes: [],
       noteUsers: {},
       error: '',
+      ws: null,
+    },
+    watch: {
+      signedIn: function(signedIn) {
+        if (signedIn) {
+          if (this.ws === null) {
+            this.ws = new WebSocket('ws://localhost:8888/ws')
+            this.ws.onmessage = (event) => {
+              const data = JSON.parse(event.data)
+              console.log(data)
+            }
+            this.ws.onclose = () => {
+              this.error = "WebSocket closed"
+              this.ws = null
+            }
+          }
+        } else {
+          if (this.ws !== null) {
+            this.ws.close()
+          }
+        }
+      }
     },
     methods: {
       signin: async function() {

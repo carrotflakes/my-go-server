@@ -1,5 +1,15 @@
 # my-go-server
 
+Practice of writing a server with golang.
+
+Aims:
+
+- Reasonable architecture
+- With tests
+- REST, WebSocket (, GraphQL)
+- Proper error handling
+- Proper logging
+
 ## Layers
 
 ### Domain
