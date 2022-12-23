@@ -6,3 +6,7 @@ dev:
 .PHONY: test
 test:
 	GO_ENV=test go test ./...
+
+.PHONY: generate
+generate:
+	go run github.com/99designs/gqlgen

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"my-arch/gateway"
+	"my-arch/graph"
 	"my-arch/mydb"
 	"my-arch/server"
 	"my-arch/usecase"
@@ -17,7 +18,8 @@ func NewServer() *gin.Engine {
 	db := mydb.New()
 	repos := gateway.NewRepositories(db)
 	usecase := usecase.New(repos)
-	server := server.New(usecase)
+	gqlResolver := graph.NewResolver(usecase)
+	server := server.New(usecase, gqlResolver)
 
 	return server
 }
