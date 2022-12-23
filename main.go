@@ -27,11 +27,13 @@ func createDB() *mydb.MyDB {
 		ID:    1,
 		Name:  "user1",
 		Email: "user1@example.com",
+		Password: "password",
 	})
 	*userTable = append(*userTable, &domain.User{
 		ID:    2,
 		Name:  "user2",
 		Email: "user2@example.com",
+		Password: "password",
 	})
 
 	return db
