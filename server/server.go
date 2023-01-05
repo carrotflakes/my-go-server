@@ -6,7 +6,6 @@ import (
 	"my-arch/server/route"
 	"my-arch/usecase"
 
-	gqlhandler "github.com/99designs/gqlgen/graphql/handler"
 	gqlplayground "github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
 )
@@ -27,10 +26,13 @@ func New(usecase *usecase.Usecase, gqlResolver *graph.Resolver) *gin.Engine {
 
 	route.Setup(r, usecase)
 
-	gqlSrv := gqlhandler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: gqlResolver}))
+	gqlSrv := NewGqlServer(graph.NewExecutableSchema(graph.Config{Resolvers: gqlResolver}))
 	playgroundSrv := gqlplayground.Handler("GraphQL playground", "/gql/query")
 	r.GET("/gql/", func(c *gin.Context) {
 		playgroundSrv.ServeHTTP(c.Writer, c.Request)
+	})
+	r.GET("/gql/query", func(c *gin.Context) {
+		gqlSrv.ServeHTTP(c.Writer, c.Request)
 	})
 	r.POST("/gql/query", func(c *gin.Context) {
 		gqlSrv.ServeHTTP(c.Writer, c.Request)

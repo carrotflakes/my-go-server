@@ -26,3 +26,12 @@ input NewNote {
 type Mutation {
   createNote(input: NewNote!): Note!
 }
+
+type Time {
+  unixTime: Int!
+  timeStamp: String!
+}
+
+type Subscription {
+  currentTime: Time!
+}
