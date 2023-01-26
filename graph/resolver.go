@@ -24,6 +24,7 @@ func NewResolver(usecase *usecase.Usecase) *Resolver {
 
 // Notes is the resolver for the notes field.
 func (r *queryResolver) Notes(ctx context.Context) ([]*model.Note, error) {
+	ctx = context.WithValue(ctx, usecase.CtxUserID, 123) // TODO
 	uCtx := Context{ctx}
 	notes, err := r.usecase.GetAllNotes(uCtx)
 	if err != nil {
