@@ -31,7 +31,7 @@ func init() {
 						return
 					}
 
-					ctx.SetCookie("userID", strconv.Itoa(user.ID), 60*60*24, "/", "", false, false)
+					ctx.SetCookie("userID", strconv.Itoa(user.ID), 60*60*24, "/", "", false, false) // TODO: use sessionState
 
 					ctx.JSON(200, gin.H{
 						"user": presenter.User(user),

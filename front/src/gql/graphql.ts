@@ -17,6 +17,7 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   createNote: Note;
+  signin: Scalars['Boolean'];
 };
 
 
@@ -24,9 +25,14 @@ export type MutationCreateNoteArgs = {
   input: NewNote;
 };
 
+
+export type MutationSigninArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type NewNote = {
   text: Scalars['String'];
-  userId: Scalars['String'];
 };
 
 export type Note = {
@@ -34,7 +40,7 @@ export type Note = {
   done: Scalars['Boolean'];
   id: Scalars['ID'];
   text: Scalars['String'];
-  user: User;
+  users: Array<User>;
 };
 
 export type Query = {
@@ -59,10 +65,27 @@ export type User = {
   name: Scalars['String'];
 };
 
+export type SigninMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type SigninMutation = { __typename?: 'Mutation', signin: boolean };
+
+export type CreateNoteMutationVariables = Exact<{
+  text: Scalars['String'];
+}>;
+
+
+export type CreateNoteMutation = { __typename?: 'Mutation', createNote: { __typename?: 'Note', text: string } };
+
 export type NotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type NotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'Note', text: string }> };
 
 
+export const SigninDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"signin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signin"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}]}]}}]} as unknown as DocumentNode<SigninMutation, SigninMutationVariables>;
+export const CreateNoteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createNote"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"text"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNote"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"text"},"value":{"kind":"Variable","name":{"kind":"Name","value":"text"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}}]}}]} as unknown as DocumentNode<CreateNoteMutation, CreateNoteMutationVariables>;
 export const NotesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"notes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}}]}}]} as unknown as DocumentNode<NotesQuery, NotesQueryVariables>;

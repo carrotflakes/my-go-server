@@ -13,6 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
+    "\n  mutation signin($email: String!, $password: String!) {\n    signin(email: $email, password: $password)\n  }\n": types.SigninDocument,
+    "\n  mutation createNote($text: String!) {\n    createNote(input: {text: $text}) {\n      text\n    }\n  }\n": types.CreateNoteDocument,
     "\n  query notes {\n    notes {\n      text\n    }\n  }\n": types.NotesDocument,
 };
 
@@ -30,6 +32,14 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation signin($email: String!, $password: String!) {\n    signin(email: $email, password: $password)\n  }\n"): (typeof documents)["\n  mutation signin($email: String!, $password: String!) {\n    signin(email: $email, password: $password)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation createNote($text: String!) {\n    createNote(input: {text: $text}) {\n      text\n    }\n  }\n"): (typeof documents)["\n  mutation createNote($text: String!) {\n    createNote(input: {text: $text}) {\n      text\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -13,7 +13,7 @@ func init() {
 			"/signout",
 			func(usecase *usecase.Usecase) gin.HandlerFunc {
 				return func(ctx *gin.Context) {
-					ctx.SetCookie("userID", "", 0, "/", "", false, false)
+					ctx.SetCookie("userID", "", 0, "/", "", false, false) // TODO: use sessionState
 
 					ctx.JSON(200, gin.H{
 						"status": "ok",

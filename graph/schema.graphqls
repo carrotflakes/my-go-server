@@ -6,7 +6,7 @@ type Note {
   id: ID!
   text: String!
   done: Boolean!
-  user: User!
+  users: [User!]!
 }
 
 type User {
@@ -20,11 +20,11 @@ type Query {
 
 input NewNote {
   text: String!
-  userId: String!
 }
 
 type Mutation {
   createNote(input: NewNote!): Note!
+  signin(email: String!, password: String!): Boolean!
 }
 
 type Time {

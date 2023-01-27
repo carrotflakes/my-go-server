@@ -1,13 +1,13 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"my-arch/domain"
-	"strconv"
 )
 
-func (u *Usecase) UserAdd(ctx Context, user *domain.User) (*domain.User, error) {
+func (u *Usecase) UserAdd(ctx context.Context, user *domain.User) (*domain.User, error) {
 	user, err := u.repos.User.Create(ctx, user)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user; %w", err)
@@ -15,7 +15,7 @@ func (u *Usecase) UserAdd(ctx Context, user *domain.User) (*domain.User, error) 
 	return user, nil
 }
 
-func (u *Usecase) UserGetAll(ctx Context) ([]*domain.User, error) {
+func (u *Usecase) UserGetAll(ctx context.Context) ([]*domain.User, error) {
 	user, err := u.repos.User.GetAll(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user; %w", err)
@@ -23,7 +23,7 @@ func (u *Usecase) UserGetAll(ctx Context) ([]*domain.User, error) {
 	return user, nil
 }
 
-func (u *Usecase) GetNoteUsers(ctx Context, noteID int) ([]*domain.User, error) {
+func (u *Usecase) GetNoteUsers(ctx context.Context, noteID int) ([]*domain.User, error) {
 	users, err := u.repos.User.GetByNoteID(ctx, noteID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get users; %w", err)
@@ -32,7 +32,12 @@ func (u *Usecase) GetNoteUsers(ctx Context, noteID int) ([]*domain.User, error) 
 	return users, nil
 }
 
-func (u *Usecase) SignIn(ctx Context, email, password string) (*domain.User, error) {
+func (u *Usecase) SignIn(ctx context.Context, email, password string) (*domain.User, error) {
+	sessionState, err := getSessionState(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sessionState; %w", err)
+	}
+
 	user, err := u.repos.User.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user; %w", err)
@@ -49,7 +54,7 @@ func (u *Usecase) SignIn(ctx Context, email, password string) (*domain.User, err
 		return nil, errors.New("invalid password") // TODO: userやパスワードが正しくないという事情を外にはもらさない
 	}
 
-	ctx.SetCookie("userID", strconv.Itoa(user.ID), 60*60*24, "/", "", false, false)
+	sessionState.UserID = user.ID
 
 	return user, nil
 }

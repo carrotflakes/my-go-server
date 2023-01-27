@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"my-arch/graph"
 	"my-arch/server/middleware"
 	"my-arch/server/route"
@@ -32,10 +33,14 @@ func New(usecase *usecase.Usecase, gqlResolver *graph.Resolver) *gin.Engine {
 		playgroundSrv.ServeHTTP(c.Writer, c.Request)
 	})
 	r.GET("/gql/query", func(c *gin.Context) {
-		gqlSrv.ServeHTTP(c.Writer, c.Request)
+		r := c.Request
+		r = r.WithContext(context.WithValue(r.Context(), "sessionState", c.Value("sessionState"))) // TODO...
+		gqlSrv.ServeHTTP(c.Writer, r)
 	})
 	r.POST("/gql/query", func(c *gin.Context) {
-		gqlSrv.ServeHTTP(c.Writer, c.Request)
+		r := c.Request
+		r = r.WithContext(context.WithValue(r.Context(), "sessionState", c.Value("sessionState")))
+		gqlSrv.ServeHTTP(c.Writer, r)
 	})
 
 	return r

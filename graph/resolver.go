@@ -3,6 +3,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"my-arch/domain"
 	"my-arch/graph/model"
 	"my-arch/usecase"
 	"time"
@@ -22,11 +23,34 @@ func NewResolver(usecase *usecase.Usecase) *Resolver {
 	}
 }
 
+// Signin is the resolver for the signin field.
+func (r *mutationResolver) Signin(ctx context.Context, email string, password string) (bool, error) {
+	_, err := r.usecase.SignIn(ctx, email, password)
+	if err != nil {
+		return false, fmt.Errorf("failed to signin; %w", err)
+	}
+	return true, nil
+}
+
+// CreateNote is the resolver for the createNote field.
+func (r *mutationResolver) CreateNote(ctx context.Context, input model.NewNote) (*model.Note, error) {
+	note := domain.NewNote(input.Text, domain.TimeNow())
+	note, err := r.usecase.AddNote(ctx, note)
+	if err != nil {
+		return nil, fmt.Errorf("failed to createNote; %w", err)
+	}
+	return &model.Note{
+		ID:    fmt.Sprintf("%d", note.ID),
+		Text:  note.Text,
+		Done:  false,
+		Users: []*model.User{},
+	}, nil
+
+}
+
 // Notes is the resolver for the notes field.
 func (r *queryResolver) Notes(ctx context.Context) ([]*model.Note, error) {
-	ctx = context.WithValue(ctx, usecase.CtxUserID, 123) // TODO
-	uCtx := Context{ctx}
-	notes, err := r.usecase.GetAllNotes(uCtx)
+	notes, err := r.usecase.GetAllNotes(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all notes; %w", err)
 	}
@@ -35,13 +59,10 @@ func (r *queryResolver) Notes(ctx context.Context) ([]*model.Note, error) {
 
 	for _, note := range notes {
 		gNotes = append(gNotes, &model.Note{
-			ID:   fmt.Sprintf("%d", note.ID),
-			Text: note.Text,
-			Done: false,
-			User: &model.User{
-				ID:   "dum",
-				Name: "dum",
-			},
+			ID:    fmt.Sprintf("%d", note.ID),
+			Text:  note.Text,
+			Done:  false,
+			Users: []*model.User{},
 		})
 	}
 
@@ -84,17 +105,4 @@ func (r *subscriptionResolver) CurrentTime(ctx context.Context) (<-chan *model.T
 
 	// We return the channel and no error.
 	return ch, nil
-}
-
-type Context struct {
-	context.Context
-}
-
-func (c Context) SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool) {
-	// TODO
-}
-
-func (c Context) GetCookie(name string) (string, error) {
-	// TODO
-	return "", fmt.Errorf("not implemented")
 }

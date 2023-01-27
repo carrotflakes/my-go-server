@@ -7,19 +7,17 @@ import (
 	"fmt"
 )
 
-type Context interface {
-	context.Context
-
-	SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool)
-	GetCookie(name string) (string, error)
+type SessionState struct {
+	// -1 ならログインしていない
+	UserID int
 }
 
-const CtxUserID = "userID"
+const CtxSessionState = "sessionState"
 
-func getUserID(ctx Context) (int, error) {
-	userID := ctx.Value(CtxUserID)
-	if userID == nil {
-		return 0, fmt.Errorf("userID is not set")
+func getSessionState(ctx context.Context) (*SessionState, error) {
+	sessionState := ctx.Value(CtxSessionState)
+	if sessionState == nil {
+		return nil, fmt.Errorf("sessionState is not set")
 	}
-	return userID.(int), nil
+	return sessionState.(*SessionState), nil
 }
