@@ -32,16 +32,13 @@ func New(usecase *usecase.Usecase, gqlResolver *graph.Resolver) *gin.Engine {
 	r.GET("/gql/", func(c *gin.Context) {
 		playgroundSrv.ServeHTTP(c.Writer, c.Request)
 	})
-	r.GET("/gql/query", func(c *gin.Context) {
+	queryHandler := func(c *gin.Context) {
 		r := c.Request
 		r = r.WithContext(context.WithValue(r.Context(), "sessionState", c.Value("sessionState"))) // TODO...
 		gqlSrv.ServeHTTP(c.Writer, r)
-	})
-	r.POST("/gql/query", func(c *gin.Context) {
-		r := c.Request
-		r = r.WithContext(context.WithValue(r.Context(), "sessionState", c.Value("sessionState")))
-		gqlSrv.ServeHTTP(c.Writer, r)
-	})
+	}
+	r.GET("/gql/query", queryHandler)
+	r.POST("/gql/query", queryHandler)
 
 	return r
 }

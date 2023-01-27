@@ -59,7 +59,7 @@
       signedIn: function(signedIn) {
         if (signedIn) {
           if (this.ws === null) {
-            this.ws = new WebSocket('ws://localhost:8888/ws')
+            this.ws = new WebSocket(`ws://${location.host}/ws`)
             this.ws.onmessage = (event) => {
               const data = JSON.parse(event.data)
               console.log(data)

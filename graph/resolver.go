@@ -40,10 +40,11 @@ func (r *mutationResolver) CreateNote(ctx context.Context, input model.NewNote) 
 		return nil, fmt.Errorf("failed to createNote; %w", err)
 	}
 	return &model.Note{
-		ID:    fmt.Sprintf("%d", note.ID),
-		Text:  note.Text,
-		Done:  false,
-		Users: []*model.User{},
+		ID:      fmt.Sprintf("%d", note.ID),
+		Text:    note.Text,
+		Done:    false,
+		Users:   []*model.User{},
+		Deleted: false,
 	}, nil
 
 }
@@ -59,10 +60,11 @@ func (r *queryResolver) Notes(ctx context.Context) ([]*model.Note, error) {
 
 	for _, note := range notes {
 		gNotes = append(gNotes, &model.Note{
-			ID:    fmt.Sprintf("%d", note.ID),
-			Text:  note.Text,
-			Done:  false,
-			Users: []*model.User{},
+			ID:      fmt.Sprintf("%d", note.ID),
+			Text:    note.Text,
+			Done:    false,
+			Users:   []*model.User{},
+			Deleted: false,
 		})
 	}
 
@@ -105,4 +107,9 @@ func (r *subscriptionResolver) CurrentTime(ctx context.Context) (<-chan *model.T
 
 	// We return the channel and no error.
 	return ch, nil
+}
+
+// Notes is the resolver for the notes field.
+func (r *subscriptionResolver) Notes(ctx context.Context) (<-chan *model.Note, error) {
+	panic(fmt.Errorf("not implemented: Notes - notes"))
 }

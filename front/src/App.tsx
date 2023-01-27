@@ -31,7 +31,7 @@ function App() {
   const emailEl = useRef(null as null | HTMLInputElement)
   const passwordEl = useRef(null as null | HTMLInputElement)
   const textEl = useRef(null as null | HTMLInputElement)
-  const { data } = useQuery(notesQueryDocument, {})
+  const { data, refetch } = useQuery(notesQueryDocument, {})
   const [signin, signinRes] = useMutation(signinMutDocument)
   const [createNote, createNoteRes] = useMutation(createNoteMutDocument)
 

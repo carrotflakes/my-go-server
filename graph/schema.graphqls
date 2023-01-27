@@ -7,6 +7,7 @@ type Note {
   text: String!
   done: Boolean!
   users: [User!]!
+  deleted: Boolean!
 }
 
 type User {
@@ -34,4 +35,5 @@ type Time {
 
 type Subscription {
   currentTime: Time!
+  notes: Note!
 }

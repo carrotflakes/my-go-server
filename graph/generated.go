@@ -53,10 +53,11 @@ type ComplexityRoot struct {
 	}
 
 	Note struct {
-		Done  func(childComplexity int) int
-		ID    func(childComplexity int) int
-		Text  func(childComplexity int) int
-		Users func(childComplexity int) int
+		Deleted func(childComplexity int) int
+		Done    func(childComplexity int) int
+		ID      func(childComplexity int) int
+		Text    func(childComplexity int) int
+		Users   func(childComplexity int) int
 	}
 
 	Query struct {
@@ -65,6 +66,7 @@ type ComplexityRoot struct {
 
 	Subscription struct {
 		CurrentTime func(childComplexity int) int
+		Notes       func(childComplexity int) int
 	}
 
 	Time struct {
@@ -87,6 +89,7 @@ type QueryResolver interface {
 }
 type SubscriptionResolver interface {
 	CurrentTime(ctx context.Context) (<-chan *model.Time, error)
+	Notes(ctx context.Context) (<-chan *model.Note, error)
 }
 
 type executableSchema struct {
@@ -127,6 +130,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Signin(childComplexity, args["email"].(string), args["password"].(string)), true
+
+	case "Note.deleted":
+		if e.complexity.Note.Deleted == nil {
+			break
+		}
+
+		return e.complexity.Note.Deleted(childComplexity), true
 
 	case "Note.done":
 		if e.complexity.Note.Done == nil {
@@ -169,6 +179,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Subscription.CurrentTime(childComplexity), true
+
+	case "Subscription.notes":
+		if e.complexity.Subscription.Notes == nil {
+			break
+		}
+
+		return e.complexity.Subscription.Notes(childComplexity), true
 
 	case "Time.timeStamp":
 		if e.complexity.Time.TimeStamp == nil {
@@ -442,6 +459,8 @@ func (ec *executionContext) fieldContext_Mutation_createNote(ctx context.Context
 				return ec.fieldContext_Note_done(ctx, field)
 			case "users":
 				return ec.fieldContext_Note_users(ctx, field)
+			case "deleted":
+				return ec.fieldContext_Note_deleted(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Note", field.Name)
 		},
@@ -697,6 +716,50 @@ func (ec *executionContext) fieldContext_Note_users(ctx context.Context, field g
 	return fc, nil
 }
 
+func (ec *executionContext) _Note_deleted(ctx context.Context, field graphql.CollectedField, obj *model.Note) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Note_deleted(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Deleted, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Note_deleted(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_notes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_notes(ctx, field)
 	if err != nil {
@@ -744,6 +807,8 @@ func (ec *executionContext) fieldContext_Query_notes(ctx context.Context, field 
 				return ec.fieldContext_Note_done(ctx, field)
 			case "users":
 				return ec.fieldContext_Note_users(ctx, field)
+			case "deleted":
+				return ec.fieldContext_Note_deleted(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Note", field.Name)
 		},
@@ -939,6 +1004,76 @@ func (ec *executionContext) fieldContext_Subscription_currentTime(ctx context.Co
 				return ec.fieldContext_Time_timeStamp(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Time", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Subscription_notes(ctx context.Context, field graphql.CollectedField) (ret func(ctx context.Context) graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subscription_notes(ctx, field)
+	if err != nil {
+		return nil
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().Notes(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return nil
+	}
+	return func(ctx context.Context) graphql.Marshaler {
+		select {
+		case res, ok := <-resTmp.(<-chan *model.Note):
+			if !ok {
+				return nil
+			}
+			return graphql.WriterFunc(func(w io.Writer) {
+				w.Write([]byte{'{'})
+				graphql.MarshalString(field.Alias).MarshalGQL(w)
+				w.Write([]byte{':'})
+				ec.marshalNNote2ᚖmyᚑarchᚋgraphᚋmodelᚐNote(ctx, field.Selections, res).MarshalGQL(w)
+				w.Write([]byte{'}'})
+			})
+		case <-ctx.Done():
+			return nil
+		}
+	}
+}
+
+func (ec *executionContext) fieldContext_Subscription_notes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Subscription",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Note_id(ctx, field)
+			case "text":
+				return ec.fieldContext_Note_text(ctx, field)
+			case "done":
+				return ec.fieldContext_Note_done(ctx, field)
+			case "users":
+				return ec.fieldContext_Note_users(ctx, field)
+			case "deleted":
+				return ec.fieldContext_Note_deleted(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Note", field.Name)
 		},
 	}
 	return fc, nil
@@ -3015,6 +3150,13 @@ func (ec *executionContext) _Note(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "deleted":
+
+			out.Values[i] = ec._Note_deleted(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3106,6 +3248,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	switch fields[0].Name {
 	case "currentTime":
 		return ec._Subscription_currentTime(ctx, fields[0])
+	case "notes":
+		return ec._Subscription_notes(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}

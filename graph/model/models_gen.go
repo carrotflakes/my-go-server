@@ -7,10 +7,11 @@ type NewNote struct {
 }
 
 type Note struct {
-	ID    string  `json:"id"`
-	Text  string  `json:"text"`
-	Done  bool    `json:"done"`
-	Users []*User `json:"users"`
+	ID      string  `json:"id"`
+	Text    string  `json:"text"`
+	Done    bool    `json:"done"`
+	Users   []*User `json:"users"`
+	Deleted bool    `json:"deleted"`
 }
 
 type Time struct {
