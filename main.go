@@ -14,7 +14,7 @@ func main() {
 	db := createDB()
 	repos := gateway.NewRepositories(db)
 	usecase := usecase.New(repos)
-	gqlResolver := graph.NewResolver(usecase)
+	gqlResolver := graph.NewResolver(repos, usecase)
 	server := server.New(usecase, gqlResolver)
 
 	server.Run(":" + config.Get().Port)

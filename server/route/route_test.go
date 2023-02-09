@@ -14,7 +14,7 @@ func NewServer() *gin.Engine {
 	db := mydb.New()
 	repos := gateway.NewRepositories(db)
 	usecase := usecase.New(repos)
-	gqlResolver := graph.NewResolver(usecase)
+	gqlResolver := graph.NewResolver(repos, usecase)
 	server := server.New(usecase, gqlResolver)
 
 	return server

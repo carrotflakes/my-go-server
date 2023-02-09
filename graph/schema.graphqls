@@ -13,9 +13,11 @@ type Note {
 type User {
   id: ID!
   name: String!
+  notes: [Note!]!
 }
 
 type Query {
+  viewer: User
   notes: [Note!]!
 }
 

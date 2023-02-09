@@ -27,16 +27,26 @@ const notesQueryDocument = graphql(`
   }
 `)
 
+const viewerQueryDocument = graphql(`
+  query viewer {
+    viewer {
+      name
+    }
+  }
+`)
+
 function App() {
   const emailEl = useRef(null as null | HTMLInputElement)
   const passwordEl = useRef(null as null | HTMLInputElement)
   const textEl = useRef(null as null | HTMLInputElement)
-  const { data, refetch } = useQuery(notesQueryDocument, {})
+  const viewerRes = useQuery(viewerQueryDocument, {})
+  const notesRes = useQuery(notesQueryDocument, {})
   const [signin, signinRes] = useMutation(signinMutDocument)
   const [createNote, createNoteRes] = useMutation(createNoteMutDocument)
 
   return (
     <div className="App">
+      {viewerRes.data && `logged in as ${viewerRes.data?.viewer?.name}`}
       <input type="text" placeholder='email' ref={emailEl} />
       <input type="text" placeholder='password' ref={passwordEl} />
       <button onClick={() => signin({ variables: { email: emailEl.current?.value || '', password: passwordEl.current?.value || '' } })}>signin</button>
@@ -47,7 +57,8 @@ function App() {
       <button onClick={() => createNote({ variables: { text: textEl.current?.value || '' } })}>add</button>
       </div>
 
-      {JSON.stringify(data?.notes)}
+      {notesRes.data?.notes.map((note) => (<div>{note.text}</div>))}
+      <button onClick={() => notesRes.refetch()}>refetch</button>
     </div>
   );
 }

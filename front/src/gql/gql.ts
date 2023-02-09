@@ -16,6 +16,7 @@ const documents = {
     "\n  mutation signin($email: String!, $password: String!) {\n    signin(email: $email, password: $password)\n  }\n": types.SigninDocument,
     "\n  mutation createNote($text: String!) {\n    createNote(input: {text: $text}) {\n      text\n    }\n  }\n": types.CreateNoteDocument,
     "\n  query notes {\n    notes {\n      text\n    }\n  }\n": types.NotesDocument,
+    "\n  query viewer {\n    viewer {\n      name\n    }\n  }\n": types.ViewerDocument,
 };
 
 /**
@@ -44,6 +45,10 @@ export function graphql(source: "\n  mutation createNote($text: String!) {\n    
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query notes {\n    notes {\n      text\n    }\n  }\n"): (typeof documents)["\n  query notes {\n    notes {\n      text\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query viewer {\n    viewer {\n      name\n    }\n  }\n"): (typeof documents)["\n  query viewer {\n    viewer {\n      name\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
