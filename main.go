@@ -6,6 +6,7 @@ import (
 	"my-arch/gateway"
 	"my-arch/graph"
 	"my-arch/mydb"
+	"my-arch/pubsub"
 	"my-arch/server"
 	"my-arch/usecase"
 )
@@ -13,8 +14,9 @@ import (
 func main() {
 	db := createDB()
 	repos := gateway.NewRepositories(db)
+	pubsub := pubsub.NewPubsub()
 	usecase := usecase.New(repos)
-	gqlResolver := graph.NewResolver(repos, usecase)
+	gqlResolver := graph.NewResolver(repos, pubsub, usecase)
 	server := server.New(usecase, gqlResolver)
 
 	server.Run(":" + config.Get().Port)

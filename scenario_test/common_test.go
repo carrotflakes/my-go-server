@@ -6,6 +6,7 @@ import (
 	"my-arch/gateway"
 	"my-arch/graph"
 	"my-arch/mydb"
+	"my-arch/pubsub"
 	"my-arch/server"
 	"my-arch/usecase"
 	"net/http"
@@ -17,8 +18,9 @@ import (
 func NewServer() *gin.Engine {
 	db := mydb.New()
 	repos := gateway.NewRepositories(db)
+	pubsub := pubsub.NewPubsub()
 	usecase := usecase.New(repos)
-	gqlResolver := graph.NewResolver(repos, usecase)
+	gqlResolver := graph.NewResolver(repos, pubsub, usecase)
 	server := server.New(usecase, gqlResolver)
 
 	return server

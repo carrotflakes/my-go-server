@@ -20,6 +20,16 @@ func (r *mutationResolver) CreateNote(ctx context.Context, input model.NewNote) 
 	if err != nil {
 		return nil, fmt.Errorf("failed to createNote; %w", err)
 	}
+	err = r.pubsub.Note.Publish(&model.Note{
+		ID:      fmt.Sprintf("%d", note.ID),
+		Text:    note.Text,
+		Done:    false,
+		Users:   []*model.User{},
+		Deleted: false,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to createNote; %w", err)
+	}
 	return &model.Note{
 		ID:      fmt.Sprintf("%d", note.ID),
 		Text:    note.Text,
@@ -124,7 +134,32 @@ func (r *subscriptionResolver) CurrentTime(ctx context.Context) (<-chan *model.T
 
 // Notes is the resolver for the notes field.
 func (r *subscriptionResolver) Notes(ctx context.Context) (<-chan *model.Note, error) {
-	panic(fmt.Errorf("not implemented: Notes - notes"))
+	ch, err := r.pubsub.Note.Subscribe()
+	if err != nil {
+		return nil, fmt.Errorf("failed to subscribe notes; %w", err)
+	}
+
+	outgoingCh := make(chan *model.Note)
+
+	go func() {
+		defer r.pubsub.Note.Unsubscribe(ch)
+
+		for {
+			select {
+			case res := <-ch:
+				note, ok := res.(*model.Note)
+				if ok {
+					select {
+					case outgoingCh <- note:
+					default:
+						return
+					}
+				}
+			}
+		}
+	}()
+
+	return outgoingCh, nil
 }
 
 // Mutation returns MutationResolver implementation.

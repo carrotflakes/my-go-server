@@ -25,7 +25,7 @@ func (b *SimpleBroker) Subscribe() (<-chan any, error) {
 	return ch, nil
 }
 
-func (b *SimpleBroker) Unsubscribe(ch chan any) error {
+func (b *SimpleBroker) Unsubscribe(ch <-chan any) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	for i, c := range b.subscribers {

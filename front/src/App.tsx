@@ -46,7 +46,7 @@ function App() {
 
   return (
     <div className="App">
-      {viewerRes.data && `logged in as ${viewerRes.data?.viewer?.name}`}
+      {viewerRes.data?.viewer ? `logged in as ${viewerRes.data?.viewer?.name}` : 'please signin'}
       <input type="text" placeholder='email' ref={emailEl} />
       <input type="text" placeholder='password' ref={passwordEl} />
       <button onClick={() => signin({ variables: { email: emailEl.current?.value || '', password: passwordEl.current?.value || '' } })}>signin</button>
